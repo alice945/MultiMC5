@@ -425,7 +425,7 @@ MultiMC::MultiMC(int &argc, char **argv) : QApplication(argc, argv)
         m_settings.reset(new INISettingsObject("multimc.cfg", this));
         // Updates
         m_settings->registerSetting("UpdateChannel", BuildConfig.VERSION_CHANNEL);
-        m_settings->registerSetting("AutoUpdate", true);
+        m_settings->registerSetting("AutoUpdate", false);
 
         // Theming
         m_settings->registerSetting("IconTheme", QString("multimc"));

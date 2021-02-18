@@ -47,6 +47,9 @@
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
         <widget class="QGroupBox" name="updateSettingsBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="title">
           <string>Update Settings</string>
          </property>
