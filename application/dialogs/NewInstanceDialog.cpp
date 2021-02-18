@@ -124,17 +124,17 @@ void NewInstanceDialog::accept()
 QList<BasePage *> NewInstanceDialog::getPages()
 {
     importPage = new ImportPage(this);
-    twitchPage = new TwitchPage(this);
-    auto technicPage = new TechnicPage(this);
+    //twitchPage = new TwitchPage(this);
+    //auto technicPage = new TechnicPage(this);
     return
     {
         new VanillaPage(this),
         importPage,
-        new AtlPage(this),
-        new FtbPage(this),
-        new LegacyFTB::Page(this),
-        technicPage,
-        twitchPage
+        //new AtlPage(this),
+        //new FtbPage(this),
+        //new LegacyFTB::Page(this),
+        //technicPage,
+        //twitchPage
     };
 }
 
