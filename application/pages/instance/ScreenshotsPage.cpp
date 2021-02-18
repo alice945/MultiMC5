@@ -20,8 +20,6 @@
 #include "dialogs/ProgressDialog.h"
 #include "dialogs/CustomMessageBox.h"
 #include "net/NetJob.h"
-#include "screenshots/ImgurUpload.h"
-#include "screenshots/ImgurAlbumCreation.h"
 #include "tasks/SequentialTask.h"
 
 #include "RWStorage.h"
@@ -294,81 +292,6 @@ void ScreenshotsPage::onItemActivated(QModelIndex index)
 void ScreenshotsPage::on_actionView_Folder_triggered()
 {
     DesktopServices::openDirectory(m_folder, true);
-}
-
-void ScreenshotsPage::on_actionUpload_triggered()
-{
-    auto selection = ui->listView->selectionModel()->selectedRows();
-    if (selection.isEmpty())
-        return;
-
-    QList<ScreenshotPtr> uploaded;
-    auto job = NetJobPtr(new NetJob("Screenshot Upload"));
-    if(selection.size() < 2)
-    {
-        auto item = selection.at(0);
-        auto info = m_model->fileInfo(item);
-        auto screenshot = std::make_shared<ScreenShot>(info);
-        job->addNetAction(ImgurUpload::make(screenshot));
-
-        m_uploadActive = true;
-        ProgressDialog dialog(this);
-        if(dialog.execWithTask(job.get()) != QDialog::Accepted)
-        {
-            CustomMessageBox::selectable(this, tr("Failed to upload screenshots!"),
-                                         tr("Unknown error"), QMessageBox::Warning)->exec();
-        }
-        else
-        {
-            auto link = screenshot->m_url;
-            QClipboard *clipboard = QApplication::clipboard();
-            clipboard->setText(link);
-            CustomMessageBox::selectable(
-                    this,
-                    tr("Upload finished"),
-                    tr("The <a href=\"%1\">link  to the uploaded screenshot</a> has been placed in your clipboard.")
-                        .arg(link),
-                    QMessageBox::Information
-            )->exec();
-        }
-
-        m_uploadActive = false;
-        return;
-    }
-
-    for (auto item : selection)
-    {
-        auto info = m_model->fileInfo(item);
-        auto screenshot = std::make_shared<ScreenShot>(info);
-        uploaded.push_back(screenshot);
-        job->addNetAction(ImgurUpload::make(screenshot));
-    }
-    SequentialTask task;
-    auto albumTask = NetJobPtr(new NetJob("Imgur Album Creation"));
-    auto imgurAlbum = ImgurAlbumCreation::make(uploaded);
-    albumTask->addNetAction(imgurAlbum);
-    task.addTask(job.unwrap());
-    task.addTask(albumTask.unwrap());
-    m_uploadActive = true;
-    ProgressDialog prog(this);
-    if (prog.execWithTask(&task) != QDialog::Accepted)
-    {
-        CustomMessageBox::selectable(this, tr("Failed to upload screenshots!"),
-                                     tr("Unknown error"), QMessageBox::Warning)->exec();
-    }
-    else
-    {
-        auto link = QString("https://imgur.com/a/%1").arg(imgurAlbum->id());
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setText(link);
-        CustomMessageBox::selectable(
-            this,
-            tr("Upload finished"),
-            tr("The <a href=\"%1\">link  to the uploaded album</a> has been placed in your clipboard.") .arg(link),
-            QMessageBox::Information
-        )->exec();
-    }
-    m_uploadActive = false;
 }
 
 void ScreenshotsPage::on_actionDelete_triggered()

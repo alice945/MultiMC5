@@ -62,7 +62,6 @@ public:
     QString SKINS_BASE = "https://crafatar.com/skins/";
     QString AUTH_BASE = "https://authserver.mojang.com/";
     QString MOJANG_STATUS_URL = "https://status.mojang.com/check";
-    QString IMGUR_BASE_URL = "https://api.imgur.com/3/";
     QString FMLLIBS_OUR_BASE_URL = "https://files.multimc.org/fmllibs/";
     QString FMLLIBS_FORGE_BASE_URL = "https://files.minecraftforge.net/fmllibs/";
     QString TRANSLATIONS_BASE_URL = "https://files.multimc.org/translations/";

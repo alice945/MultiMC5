@@ -358,10 +358,6 @@ add_unit_test(ParseUtils
 # the screenshots feature
 set(SCREENSHOTS_SOURCES
     screenshots/Screenshot.h
-    screenshots/ImgurUpload.h
-    screenshots/ImgurUpload.cpp
-    screenshots/ImgurAlbumCreation.h
-    screenshots/ImgurAlbumCreation.cpp
 )
 
 set(TASKS_SOURCES
