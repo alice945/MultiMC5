@@ -87,7 +87,6 @@
 #include "dialogs/ExportInstanceDialog.h"
 #include <InstanceImportTask.h>
 #include "UpdateController.h"
-#include "KonamiCode.h"
 #include <InstanceCopyTask.h>
 
 // WHY: to hold the pre-translation strings together with the T pointer, so it can be retranslated without a lot of ugly code
@@ -643,12 +642,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
         connect(q, SIGNAL(activated()), qApp, SLOT(quit()));
     }
 
-    // Konami Code
-    {
-        secretEventFilter = new KonamiCode(this);
-        connect(secretEventFilter, &KonamiCode::triggered, this, &MainWindow::konamiTriggered);
-    }
-
     // Add the news label to the news toolbar.
     {
         m_newsChecker.reset(new NewsChecker(BuildConfig.NEWS_RSS_URL));
@@ -842,12 +835,6 @@ QMenu * MainWindow::createPopupMenu()
     QMenu* filteredMenu = QMainWindow::createPopupMenu();
     filteredMenu->removeAction( ui->mainToolBar->toggleViewAction() );
     return filteredMenu;
-}
-
-void MainWindow::konamiTriggered()
-{
-    // ENV.enableFeature("NewModsPage");
-    qDebug() << "Super Secret Mode ACTIVATED!";
 }
 
 void MainWindow::skinJobFinished()
@@ -1137,7 +1124,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
     {
         if (ev->type() == QEvent::KeyPress)
         {
-            secretEventFilter->input(ev);
             QKeyEvent *keyEvent = static_cast<QKeyEvent *>(ev);
             switch (keyEvent->key())
             {

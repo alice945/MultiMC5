@@ -37,7 +37,6 @@ class MinecraftLauncher;
 class BaseProfilerFactory;
 class GroupView;
 class ServerStatus;
-class KonamiCode;
 class InstanceTask;
 
 class MainWindow : public QMainWindow
@@ -182,8 +181,6 @@ private slots:
      */
     void downloadUpdates(GoUpdate::Status status);
 
-    void konamiTriggered();
-
     void globalSettingsClosed();
 
 private:
@@ -208,7 +205,6 @@ private:
     ServerStatus *m_statusRight = nullptr;
     QMenu *accountMenu = nullptr;
     QToolButton *accountMenuButton = nullptr;
-    KonamiCode * secretEventFilter = nullptr;
 
     unique_qobject_ptr<NetJob> skin_download_job;
     unique_qobject_ptr<NewsChecker> m_newsChecker;
