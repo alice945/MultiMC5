@@ -173,7 +173,6 @@ public:
     //TranslatedAction actionRefresh;
     TranslatedAction actionCheckUpdate;
     TranslatedAction actionSettings;
-    TranslatedAction actionPatreon;
     TranslatedAction actionMoreNews;
     TranslatedAction actionManageAccounts;
     TranslatedAction actionLaunchInstance;
@@ -363,14 +362,6 @@ public:
         }
 
         mainToolBar->addSeparator();
-
-        actionPatreon = TranslatedAction(MainWindow);
-        actionPatreon->setObjectName(QStringLiteral("actionPatreon"));
-        actionPatreon->setIcon(MMC->getThemedIcon("patreon"));
-        actionPatreon.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Support MultiMC"));
-        actionPatreon.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the MultiMC Patreon page."));
-        all_actions.append(&actionPatreon);
-        mainToolBar->addAction(actionPatreon);
 
         actionCAT = TranslatedAction(MainWindow);
         actionCAT->setObjectName(QStringLiteral("actionCAT"));
