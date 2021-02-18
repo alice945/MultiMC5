@@ -593,7 +593,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
 
         createStatusBar(MainWindow);
-        createNewsToolbar(MainWindow);
+        //createNewsToolbar(MainWindow);
         createInstanceToolbar(MainWindow);
 
         retranslateUi(MainWindow);
@@ -643,7 +643,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
     }
 
     // Add the news label to the news toolbar.
-    {
+    /*{
         m_newsChecker.reset(new NewsChecker(BuildConfig.NEWS_RSS_URL));
         newsLabel = new QToolButton();
         newsLabel->setIcon(MMC->getThemedIcon("news"));
@@ -654,7 +654,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
         QObject::connect(newsLabel, &QAbstractButton::clicked, this, &MainWindow::newsButtonClicked);
         QObject::connect(m_newsChecker.get(), &NewsChecker::newsLoaded, this, &MainWindow::updateNewsLabel);
         updateNewsLabel();
-    }
+    }*/
 
     // Create the instance list widget
     {
@@ -784,10 +784,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
     }
 
     // load the news
-    {
+   /*{
         m_newsChecker->reloadNews();
         updateNewsLabel();
-    }
+    }*/
 
 
     if(BuildConfig.UPDATER_ENABLED)
