@@ -32,7 +32,6 @@ class BaseDetachedToolFactory;
 class TranslationsModel;
 class ITheme;
 class MCEditTool;
-class GAnalytics;
 
 #if defined(MMC)
 #undef MMC
@@ -55,11 +54,6 @@ public:
 public:
     MultiMC(int &argc, char **argv);
     virtual ~MultiMC();
-
-    GAnalytics *analytics() const
-    {
-        return m_analytics;
-    }
 
     std::shared_ptr<SettingsObject> settings() const
     {
@@ -158,7 +152,6 @@ private slots:
     void messageReceived(const QString & message);
     void controllerSucceeded();
     void controllerFailed(const QString & error);
-    void analyticsSettingChanged(const Setting &setting, QVariant value);
     void setupWizardFinished(int status);
 
 private:
@@ -217,7 +210,6 @@ private:
     // peer MultiMC instance connector - used to implement single instance MultiMC and signalling
     LocalPeer * m_peerInstance = nullptr;
 
-    GAnalytics * m_analytics = nullptr;
     SetupWizard * m_setupWizard = nullptr;
 public:
     QString m_instanceIdToLaunch;
