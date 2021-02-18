@@ -53,11 +53,6 @@ public:
     QString NEWS_RSS_URL;
 
     /**
-     * API key you can get from paste.ee when you register an account
-     */
-    QString PASTE_EE_KEY;
-
-    /**
      * MultiMC Metadata repository URL prefix
      */
     QString META_URL;

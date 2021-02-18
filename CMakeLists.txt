@@ -72,9 +72,6 @@ set(MultiMC_NOTIFICATION_URL "" CACHE STRING "URL for checking for notifications
 # The metadata server
 set(MultiMC_META_URL "https://meta.multimc.org/v1/" CACHE STRING "URL to fetch MultiMC's meta files from.")
 
-# paste.ee API key
-set(MultiMC_PASTE_EE_API_KEY "utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ" CACHE STRING "API key you can get from paste.ee when you register an account")
-
 #### Check the current Git commit and branch
 include(GetGitRevisionDescription)
 get_git_head_revision(MultiMC_GIT_REFSPEC MultiMC_GIT_COMMIT)

@@ -59,7 +59,6 @@ private slots:
     void populateSelectLogBox();
     void on_selectLogBox_currentIndexChanged(const int index);
     void on_btnReload_clicked();
-    void on_btnPaste_clicked();
     void on_btnCopy_clicked();
     void on_btnDelete_clicked();
     void on_btnClean_clicked();

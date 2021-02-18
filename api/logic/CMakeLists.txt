@@ -116,8 +116,6 @@ set(NET_SOURCES
     net/NetAction.h
     net/NetJob.cpp
     net/NetJob.h
-    net/PasteUpload.cpp
-    net/PasteUpload.h
     net/Sink.h
     net/Validator.h
 )

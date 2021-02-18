@@ -98,16 +98,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btnPaste">
-           <property name="toolTip">
-            <string>Upload the log to paste.ee - it will stay online for a month</string>
-           </property>
-           <property name="text">
-            <string>Upload</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="btnClear">
            <property name="toolTip">
             <string>Clear the log</string>
@@ -171,7 +161,6 @@
   <tabstop>trackLogCheckbox</tabstop>
   <tabstop>wrapCheckbox</tabstop>
   <tabstop>btnCopy</tabstop>
-  <tabstop>btnPaste</tabstop>
   <tabstop>btnClear</tabstop>
   <tabstop>text</tabstop>
   <tabstop>searchBar</tabstop>

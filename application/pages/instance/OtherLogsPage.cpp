@@ -176,11 +176,6 @@ void OtherLogsPage::on_btnReload_clicked()
     }
 }
 
-void OtherLogsPage::on_btnPaste_clicked()
-{
-    GuiUtil::uploadPaste(ui->text->toPlainText(), this);
-}
-
 void OtherLogsPage::on_btnCopy_clicked()
 {
     GuiUtil::setClipboardText(ui->text->toPlainText());
@@ -274,7 +269,6 @@ void OtherLogsPage::setControlsEnabled(const bool enabled)
     ui->btnReload->setEnabled(enabled);
     ui->btnDelete->setEnabled(enabled);
     ui->btnCopy->setEnabled(enabled);
-    ui->btnPaste->setEnabled(enabled);
     ui->text->setEnabled(enabled);
     ui->btnClean->setEnabled(enabled);
 }

@@ -14,7 +14,6 @@
 #include "pages/global/ProxyPage.h"
 #include "pages/global/ExternalToolsPage.h"
 #include "pages/global/AccountListPage.h"
-#include "pages/global/PasteEEPage.h"
 #include "pages/global/CustomCommandsPage.h"
 
 #include "themes/ITheme.h"
@@ -543,9 +542,6 @@ MultiMC::MultiMC(int &argc, char **argv) : QApplication(argc, argv)
 
         m_settings->registerSetting("UpdateDialogGeometry", "");
 
-        // paste.ee API key
-        m_settings->registerSetting("PasteEEAPIKey", "multimc");
-
         // Init page provider
         {
             m_globalSettingsProvider = std::make_shared<GenericPageProvider>(tr("Settings"));
@@ -557,7 +553,6 @@ MultiMC::MultiMC(int &argc, char **argv) : QApplication(argc, argv)
             m_globalSettingsProvider->addPage<ProxyPage>();
             m_globalSettingsProvider->addPage<ExternalToolsPage>();
             m_globalSettingsProvider->addPage<AccountListPage>();
-            m_globalSettingsProvider->addPage<PasteEEPage>();
         }
         qDebug() << "<> Settings loaded.";
     }
