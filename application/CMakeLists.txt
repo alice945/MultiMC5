@@ -292,7 +292,6 @@ SET(MULTIMC_UIS
 )
 
 set(MULTIMC_QRCS
-    resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
     resources/pe_light/pe_light.qrc
@@ -301,7 +300,6 @@ set(MULTIMC_QRCS
     resources/OSX/OSX.qrc
     resources/iOS/iOS.qrc
     resources/flat/flat.qrc
-    resources/documents/documents.qrc
 )
 
 ######## Windows resource files ########
