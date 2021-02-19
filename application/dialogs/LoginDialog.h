@@ -43,6 +43,9 @@ protected
 slots:
     void accept();
 
+    void uuidCheckFinished();
+    void uuidCheckFailed();
+
     void onTaskFailed(const QString &reason);
     void onTaskSucceeded();
     void onTaskStatus(const QString &status);
@@ -52,6 +55,9 @@ slots:
     void on_passTextBox_textEdited(const QString &newText);
 
 private:
+    QByteArray uuidData;
+    QString username;
+
     Ui::LoginDialog *ui;
     MojangAccountPtr m_account;
     std::shared_ptr<Task> m_loginTask;

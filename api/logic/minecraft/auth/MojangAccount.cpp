@@ -103,6 +103,19 @@ MojangAccountPtr MojangAccount::createFromUsername(const QString &username)
     return account;
 }
 
+MojangAccountPtr MojangAccount::createFromUsernameOffline(const QString &username, const QString &uuid)
+{
+    MojangAccountPtr account(new MojangAccount());
+    account->m_clientToken = "ff64ff64ff64ff64ff64ff64ff64ff64";
+    account->m_accessToken = "ff64ff64ff64ff64ff64ff64ff64ff64";
+    account->m_username = username;
+    QList<AccountProfile> profiles;
+    profiles.append({uuid, username, false});
+    account->m_profiles = profiles;
+    account->setCurrentProfile(uuid);
+    return account;
+}
+
 QJsonObject MojangAccount::saveToJson() const
 {
     QJsonObject json;

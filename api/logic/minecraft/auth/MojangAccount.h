@@ -77,6 +77,9 @@ public: /* construction */
     //! Creates an empty account for the specified user name.
     static MojangAccountPtr createFromUsername(const QString &username);
 
+    //! Creates an offline account for the specified user name.
+    static MojangAccountPtr createFromUsernameOffline(const QString &username, const QString &uuid);
+
     //! Loads a MojangAccount from the given JSON object.
     static MojangAccountPtr loadFromJson(const QJsonObject &json);
 

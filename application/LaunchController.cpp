@@ -78,111 +78,123 @@ void LaunchController::login()
         return;
     }
 
-    // we try empty password first :)
-    QString password;
-    // we loop until the user succeeds in logging in or gives up
-    bool tryagain = true;
-    // the failure. the default failure.
-    const QString needLoginAgain = tr("Your account is currently not logged in. Please enter your password to log in again. <br /> <br /> This could be caused by a password change.");
-    QString failReason = needLoginAgain;
+    if (account->clientToken() != "ff64ff64ff64ff64ff64ff64ff64ff64") {
+        //Online
+        // we try empty password first :)
+        QString password;
+        // we loop until the user succeeds in logging in or gives up
+        bool tryagain = true;
+        // the failure. the default failure.
+        const QString needLoginAgain = tr("Your account is currently not logged in. Please enter your password to log in again. <br /> <br /> This could be caused by a password change.");
+        QString failReason = needLoginAgain;
 
-    while (tryagain)
-    {
-        m_session = std::make_shared<AuthSession>();
-        m_session->wants_online = m_online;
-        auto task = account->login(m_session, password);
-        if (task)
+        while (tryagain)
         {
-            // We'll need to validate the access token to make sure the account
-            // is still logged in.
-            ProgressDialog progDialog(m_parentWidget);
-            if (m_online)
+            m_session = std::make_shared<AuthSession>();
+            m_session->wants_online = m_online;
+            auto task = account->login(m_session, password);
+            if (task)
             {
-                progDialog.setSkipButton(true, tr("Play Offline"));
-            }
-            progDialog.execWithTask(task.get());
-            if (!task->wasSuccessful())
-            {
-                auto failReasonNew = task->failReason();
-                if(failReasonNew == "Invalid token.")
+                // We'll need to validate the access token to make sure the account
+                // is still logged in.
+                ProgressDialog progDialog(m_parentWidget);
+                if (m_online)
                 {
-                    account->invalidateClientToken();
-                    failReason = needLoginAgain;
+                    progDialog.setSkipButton(true, tr("Play Offline"));
                 }
-                else failReason = failReasonNew;
-            }
-        }
-        switch (m_session->status)
-        {
-        case AuthSession::Undetermined:
-        {
-            qCritical() << "Received undetermined session status during login. Bye.";
-            tryagain = false;
-            emitFailed(tr("Received undetermined session status during login."));
-            break;
-        }
-        case AuthSession::RequiresPassword:
-        {
-            EditAccountDialog passDialog(failReason, m_parentWidget, EditAccountDialog::PasswordField);
-            auto username = m_session->username;
-            auto chopN = [](QString toChop, int N) -> QString
-            {
-                if(toChop.size() > N)
+                progDialog.execWithTask(task.get());
+                if (!task->wasSuccessful())
                 {
-                    auto left = toChop.left(N);
-                    left += QString("\u25CF").repeated(toChop.size() - N);
-                    return left;
+                    auto failReasonNew = task->failReason();
+                    if(failReasonNew == "Invalid token.")
+                    {
+                        account->invalidateClientToken();
+                        failReason = needLoginAgain;
+                    }
+                    else failReason = failReasonNew;
                 }
-                return toChop;
-            };
-
-            if(username.contains('@'))
-            {
-                auto parts = username.split('@');
-                auto mailbox = chopN(parts[0],3);
-                QString domain = chopN(parts[1], 3);
-                username = mailbox + '@' + domain;
             }
-            passDialog.setUsername(username);
-            if (passDialog.exec() == QDialog::Accepted)
+            switch (m_session->status)
             {
-                password = passDialog.password();
-            }
-            else
+            case AuthSession::Undetermined:
             {
+                qCritical() << "Received undetermined session status during login. Bye.";
                 tryagain = false;
-            }
-            break;
-        }
-        case AuthSession::PlayableOffline:
-        {
-            // we ask the user for a player name
-            bool ok = false;
-            QString usedname = m_session->player_name;
-            QString name = QInputDialog::getText(m_parentWidget, tr("Player name"),
-                                                 tr("Choose your offline mode player name."),
-                                                 QLineEdit::Normal, m_session->player_name, &ok);
-            if (!ok)
-            {
-                tryagain = false;
+                emitFailed(tr("Received undetermined session status during login."));
                 break;
             }
-            if (name.length())
+            case AuthSession::RequiresPassword:
             {
-                usedname = name;
+                EditAccountDialog passDialog(failReason, m_parentWidget, EditAccountDialog::PasswordField);
+                auto username = m_session->username;
+                auto chopN = [](QString toChop, int N) -> QString
+                {
+                    if(toChop.size() > N)
+                    {
+                        auto left = toChop.left(N);
+                        left += QString("\u25CF").repeated(toChop.size() - N);
+                        return left;
+                    }
+                    return toChop;
+                };
+
+                if(username.contains('@'))
+                {
+                    auto parts = username.split('@');
+                    auto mailbox = chopN(parts[0],3);
+                    QString domain = chopN(parts[1], 3);
+                    username = mailbox + '@' + domain;
+                }
+                passDialog.setUsername(username);
+                if (passDialog.exec() == QDialog::Accepted)
+                {
+                    password = passDialog.password();
+                }
+                else
+                {
+                    tryagain = false;
+                }
+                break;
             }
-            m_session->MakeOffline(usedname);
+            case AuthSession::PlayableOffline:
+            {
+                // we ask the user for a player name
+                bool ok = false;
+                QString usedname = m_session->player_name;
+                QString name = QInputDialog::getText(m_parentWidget, tr("Player name"),
+                                                     tr("Choose your offline mode player name."),
+                                                     QLineEdit::Normal, m_session->player_name, &ok);
+                if (!ok)
+                {
+                    tryagain = false;
+                    break;
+                }
+                if (name.length())
+                {
+                    usedname = name;
+                }
+                m_session->MakeOffline(usedname);
             // offline flavored game from here :3
+            }
+            case AuthSession::PlayableOnline:
+            {
+                launchInstance();
+                tryagain = false;
+                return;
+            }
+            }
         }
-        case AuthSession::PlayableOnline:
-        {
-            launchInstance();
-            tryagain = false;
-            return;
-        }
-        }
+        emitFailed(tr("Failed to launch."));
+    } else {
+        //Offline
+        m_session = std::make_shared<AuthSession>();
+        m_session->client_token = account->clientToken();
+        m_session->access_token = account->accessToken();
+        m_session->uuid = account->currentProfile()->id;
+        m_session->status = AuthSession::PlayableOffline;
+        m_session->MakeOffline(account->currentProfile()->name);
+        launchInstance();
     }
-    emitFailed(tr("Failed to launch."));
 }
 
 void LaunchController::launchInstance()

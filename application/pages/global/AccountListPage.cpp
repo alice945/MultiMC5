@@ -41,8 +41,7 @@ AccountListPage::AccountListPage(QWidget *parent)
 {
     ui->setupUi(this);
     ui->listView->setEmptyString(tr(
-        "Welcome!\n"
-        "If you're new here, you can click the \"Add\" button to add your Mojang or Minecraft account."
+        "No Accounts"
     ));
     ui->listView->setEmptyMode(VersionListView::String);
     ui->listView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -105,7 +104,7 @@ void AccountListPage::listChanged()
 
 void AccountListPage::on_actionAdd_triggered()
 {
-    addAccount(tr("Please enter your Minecraft account email and password to add your account."));
+    addAccount(tr("Please enter your Minecraft account email and password to add your account, or type in a username and press ok to use a cracked account."));
 }
 
 void AccountListPage::on_actionRemove_triggered()

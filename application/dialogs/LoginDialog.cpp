@@ -41,15 +41,56 @@ void LoginDialog::accept()
     setUserInputsEnabled(false);
     ui->progressBar->setVisible(true);
 
-    // Setup the login task and start it
-    m_account = MojangAccount::createFromUsername(ui->userTextBox->text());
-    m_loginTask = m_account->login(nullptr, ui->passTextBox->text());
-    connect(m_loginTask.get(), &Task::failed, this, &LoginDialog::onTaskFailed);
-    connect(m_loginTask.get(), &Task::succeeded, this,
-            &LoginDialog::onTaskSucceeded);
-    connect(m_loginTask.get(), &Task::status, this, &LoginDialog::onTaskStatus);
-    connect(m_loginTask.get(), &Task::progress, this, &LoginDialog::onTaskProgress);
-    m_loginTask->start();
+    if (!ui->passTextBox->text().isEmpty()) {
+        // Online Mode
+        // Setup the login task and start it
+        m_account = MojangAccount::createFromUsername(ui->userTextBox->text());
+        m_loginTask = m_account->login(nullptr, ui->passTextBox->text());
+        connect(m_loginTask.get(), &Task::failed, this, &LoginDialog::onTaskFailed);
+        connect(m_loginTask.get(), &Task::succeeded, this,
+                &LoginDialog::onTaskSucceeded);
+        connect(m_loginTask.get(), &Task::status, this, &LoginDialog::onTaskStatus);
+        connect(m_loginTask.get(), &Task::progress, this, &LoginDialog::onTaskProgress);
+        m_loginTask->start();
+    }
+    else {
+        // Offline Mode / No Password
+        username = ui->userTextBox->text();
+        QUrl uuidAPI = QUrl("https://api.mojang.com/users/profiles/minecraft/" + username);
+
+        auto job = new NetJob("Get Player UUID");
+        job->addNetAction(Net::Download::makeByteArray(uuidAPI, &uuidData));
+        connect(job, &NetJob::succeeded, this, &LoginDialog::uuidCheckFinished);
+        connect(job, &NetJob::failed, this, &LoginDialog::uuidCheckFailed);
+        job->start();
+    }
+}
+
+void LoginDialog::uuidCheckFinished() {
+    QJsonParseError jsonError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(uuidData, &jsonError);
+    if (jsonError.error != QJsonParseError::NoError || !jsonDoc.isObject()) {
+        qCritical() << "Failed to parse UUID request. JSON error"
+                    << jsonError.errorString() << "at offset" << jsonError.offset;
+        QString rndUUID = QCryptographicHash::hash(username.toLocal8Bit(), QCryptographicHash::Md5).toHex();
+        m_account = MojangAccount::createFromUsernameOffline(username, rndUUID);
+        QDialog::accept();
+    } else {
+        QJsonObject object = jsonDoc.object();
+        if (object.value("name").toVariant().toString() != username) {
+            qCritical() << "UUID Json has different username than requested:"
+                        << object.value("player").toVariant().toString();
+        }
+        m_account = MojangAccount::createFromUsernameOffline(username, object.value("id").toVariant().toString());
+        QDialog::accept();
+    }
+}
+
+void LoginDialog::uuidCheckFailed() {
+    qCritical() << "UUID json get failed.";
+    QString rndUUID = QCryptographicHash::hash(username.toLocal8Bit(), QCryptographicHash::Md5).toHex();
+    m_account = MojangAccount::createFromUsernameOffline(username, rndUUID);
+    QDialog::accept();
 }
 
 void LoginDialog::setUserInputsEnabled(bool enable)
@@ -63,12 +104,12 @@ void LoginDialog::setUserInputsEnabled(bool enable)
 void LoginDialog::on_userTextBox_textEdited(const QString &newText)
 {
     ui->buttonBox->button(QDialogButtonBox::Ok)
-        ->setEnabled(!newText.isEmpty() && !ui->passTextBox->text().isEmpty());
+        ->setEnabled(!newText.isEmpty());
 }
 void LoginDialog::on_passTextBox_textEdited(const QString &newText)
 {
     ui->buttonBox->button(QDialogButtonBox::Ok)
-        ->setEnabled(!newText.isEmpty() && !ui->userTextBox->text().isEmpty());
+        ->setEnabled(!ui->userTextBox->text().isEmpty());
 }
 
 void LoginDialog::onTaskFailed(const QString &reason)
